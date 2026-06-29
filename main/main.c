@@ -33,6 +33,7 @@
 #define MAX_ENCODER_DELTA   10
 #define DEBOUNCE_MS         50
 #define HOLD_MS             700
+#define ENCODER_DEBOUNCE_MS 50
 
 static float   g_shadow_brightness = 1.0f;
 static uint8_t g_osd_mode = 0;
@@ -382,9 +383,10 @@ static void encoder_task(void *arg)
 
     uint8_t last_ab = (gpio_get_level(PIN_ENC_A) << 1) |
                        gpio_get_level(PIN_ENC_B);
-    int     position    = 0;
-    int     last_sent   = 0;
-    int     initialized = 0;
+    int     position       = 0;
+    int     last_sent      = 0;
+    int     initialized    = 0;
+    TickType_t last_send_tick = 0;
 
     for (;;) {
         uint8_t a = gpio_get_level(PIN_ENC_A);
@@ -403,7 +405,11 @@ static void encoder_task(void *arg)
                 initialized = 1;
                 last_sent = detent_pos;
             } else if (abs(delta) <= MAX_ENCODER_DELTA) {
-                espnow_send_encoder(delta);
+                TickType_t now = xTaskGetTickCount();
+                if (now - last_send_tick >= pdMS_TO_TICKS(ENCODER_DEBOUNCE_MS)) {
+                    espnow_send_encoder(delta);
+                    last_send_tick = now;
+                }
                 last_sent = detent_pos;
             } else {
                 last_sent = detent_pos;
