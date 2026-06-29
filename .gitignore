@@ -1,0 +1,8 @@
+/build/
+/sdkconfig
+/managed_components/
+dependencies.lock
+*.swp
+*.swo
+__pycache__/
+*.pyc
