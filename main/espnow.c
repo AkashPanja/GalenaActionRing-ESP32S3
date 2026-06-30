@@ -27,35 +27,32 @@ static uint8_t s_light_bar_mac[] = LIGHT_BAR_MAC;
 
 static int64_t s_suppress_relay_until = 0;
 
-static void espnow_send_encoder(int delta)
+static esp_err_t send_packet(uint8_t type, int32_t value)
 {
     bool mounted = tud_mounted();
     galena_packet_t pkt = {
-        .type      = PKT_ENCODER,
-        .value     = (int32_t)delta,
+        .type      = type,
+        .value     = value,
         .osd_show  = mounted && (g_osd_mode == 1),
         .connected = mounted,
     };
-    esp_err_t ret_en = esp_now_send(s_light_bar_mac, (uint8_t *)&pkt, sizeof(pkt));
-    if (ret_en != ESP_OK) ESP_LOGW(TAG, "TX encoder FAILED: %d", ret_en);
-    ESP_LOGI(TAG, "TX encoder delta=%+d show=%d conn=%d", delta, pkt.osd_show, pkt.connected);
-    cdc_log("TX encoder delta=%+d show=%d conn=%d\r\n", delta, pkt.osd_show, pkt.connected);
+    esp_err_t ret = esp_now_send(s_light_bar_mac, (uint8_t *)&pkt, sizeof(pkt));
+    ESP_LOGI(TAG, "TX type=%d val=%ld show=%d conn=%d ret=%d", type, (long)value, pkt.osd_show, pkt.connected, ret);
+    cdc_log("TX type=%d val=%ld show=%d conn=%d ret=%d\r\n", type, (long)value, pkt.osd_show, pkt.connected, ret);
+    return ret;
+}
+
+static void espnow_send_encoder(int delta)
+{
+    esp_err_t ret = send_packet(PKT_ENCODER, (int32_t)delta);
+    if (ret != ESP_OK) ESP_LOGW(TAG, "TX encoder FAILED: %d", ret);
     hid_send_event(HID_EVT_ENCODER, (int8_t)delta);
 }
 
 static void espnow_send_button(int state)
 {
-    bool mounted = tud_mounted();
-    galena_packet_t pkt = {
-        .type      = PKT_BUTTON,
-        .value     = (int32_t)state,
-        .osd_show  = mounted && (g_osd_mode == 1),
-        .connected = mounted,
-    };
-    esp_err_t ret_btn = esp_now_send(s_light_bar_mac, (uint8_t *)&pkt, sizeof(pkt));
-    if (ret_btn != ESP_OK) ESP_LOGW(TAG, "TX button FAILED: %d", ret_btn);
-    ESP_LOGI(TAG, "TX button state=%d show=%d conn=%d", state, pkt.osd_show, pkt.connected);
-    cdc_log("TX button state=%d show=%d conn=%d\r\n", state, pkt.osd_show, pkt.connected);
+    esp_err_t ret = send_packet(PKT_BUTTON, (int32_t)state);
+    if (ret != ESP_OK) ESP_LOGW(TAG, "TX button FAILED: %d", ret);
     hid_send_event(HID_EVT_BUTTON, (int8_t)state);
 }
 
@@ -130,16 +127,7 @@ void heartbeat_task(void *arg)
 {
     for (;;) {
         vTaskDelay(pdMS_TO_TICKS(10000));
-        bool mounted = tud_mounted();
-        galena_packet_t pkt = {
-            .type      = PKT_HEARTBEAT,
-            .value     = 0,
-            .osd_show  = mounted && (g_osd_mode == 1),
-            .connected = mounted,
-        };
-        esp_err_t ret = esp_now_send(s_light_bar_mac, (uint8_t *)&pkt, sizeof(pkt));
-        ESP_LOGI(TAG, "TX heartbeat show=%d conn=%d ret=%d", pkt.osd_show, pkt.connected, ret);
-        cdc_log("TX heartbeat show=%d conn=%d ret=%d\r\n", pkt.osd_show, pkt.connected, ret);
+        send_packet(PKT_HEARTBEAT, 0);
     }
 }
 
