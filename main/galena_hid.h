@@ -3,7 +3,7 @@
 #include "tusb.h"
 
 #define GALENA_USB_VID      0x303A
-#define GALENA_USB_PID      0x4005
+#define GALENA_USB_PID      0x4006
 
 #define GALENA_REPORT_SIZE  8
 
