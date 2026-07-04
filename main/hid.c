@@ -15,6 +15,8 @@
 #include "galena_protocol.h"
 #include "hid.h"
 #include "cdc_log.h"
+#include "usb_desc.h"
+#include "shared.h"
 
 #define PIN_OSD_DEBUG       GPIO_NUM_21
 
@@ -26,7 +28,7 @@ extern uint8_t g_osd_mode;
 extern volatile uint32_t g_osd_report_count;
 extern QueueHandle_t s_hid_queue;
 
-static void hid_send_event(galena_hid_event_t type, int8_t value)
+void hid_send_event(galena_hid_event_t type, int8_t value)
 {
     hid_queue_item_t item = { .type = type, .value = value };
     if (xQueueSend(s_hid_queue, &item, 0) != pdTRUE) {
@@ -87,7 +89,7 @@ uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid)
         return _desc_str;
     }
 
-    if (index >= sizeof(galena_string_descs) / sizeof(galena_string_descs[0]))
+    if (index >= GALENA_STRING_DESC_COUNT)
         return NULL;
 
     const char *str = galena_string_descs[index];

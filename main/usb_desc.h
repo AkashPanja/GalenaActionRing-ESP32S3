@@ -5,7 +5,8 @@
 #define USBD_PID           0x4006
 
 extern const tusb_desc_device_t galena_device_desc;
-extern const char *galena_string_descs[];
+#define GALENA_STRING_DESC_COUNT 4
+extern const char *galena_string_descs[GALENA_STRING_DESC_COUNT];
 extern const uint8_t galena_config_desc[];
 
 enum {

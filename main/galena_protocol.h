@@ -10,8 +10,21 @@
 #define PKT_BOOT         0x06   // Action Ring ← Light Bar : boot/reset notification
 
 // ─── MAC Addresses ───────────────────────────────────────────────────────────
-#define LIGHT_BAR_MAC    {0x88, 0x56, 0xA6, 0x2A, 0x43, 0xB0}
-#define ACTION_RING_MAC  {0xE0, 0x72, 0xA1, 0xE9, 0x39, 0x44}
+#define LIGHT_BAR_MAC_B0 0x88
+#define LIGHT_BAR_MAC_B1 0x56
+#define LIGHT_BAR_MAC_B2 0xA6
+#define LIGHT_BAR_MAC_B3 0x2A
+#define LIGHT_BAR_MAC_B4 0x43
+#define LIGHT_BAR_MAC_B5 0xB0
+#define LIGHT_BAR_MAC    {LIGHT_BAR_MAC_B0, LIGHT_BAR_MAC_B1, LIGHT_BAR_MAC_B2, LIGHT_BAR_MAC_B3, LIGHT_BAR_MAC_B4, LIGHT_BAR_MAC_B5}
+
+#define ACTION_RING_MAC_B0 0xE0
+#define ACTION_RING_MAC_B1 0x72
+#define ACTION_RING_MAC_B2 0xA1
+#define ACTION_RING_MAC_B3 0xE9
+#define ACTION_RING_MAC_B4 0x39
+#define ACTION_RING_MAC_B5 0x44
+#define ACTION_RING_MAC    {ACTION_RING_MAC_B0, ACTION_RING_MAC_B1, ACTION_RING_MAC_B2, ACTION_RING_MAC_B3, ACTION_RING_MAC_B4, ACTION_RING_MAC_B5}
 
 // ─── Shared Packet ───────────────────────────────────────────────────────────
 typedef struct __attribute__((packed)) {

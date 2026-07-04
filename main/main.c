@@ -130,8 +130,8 @@ void app_main(void)
     ESP_LOGI(TAG, "My MAC: %02X:%02X:%02X:%02X:%02X:%02X",
              my_mac[0], my_mac[1], my_mac[2], my_mac[3], my_mac[4], my_mac[5]);
     ESP_LOGI(TAG, "Peer MAC: %02X:%02X:%02X:%02X:%02X:%02X",
-             LIGHT_BAR_MAC[0], LIGHT_BAR_MAC[1], LIGHT_BAR_MAC[2],
-             LIGHT_BAR_MAC[3], LIGHT_BAR_MAC[4], LIGHT_BAR_MAC[5]);
+             LIGHT_BAR_MAC_B0, LIGHT_BAR_MAC_B1, LIGHT_BAR_MAC_B2,
+             LIGHT_BAR_MAC_B3, LIGHT_BAR_MAC_B4, LIGHT_BAR_MAC_B5);
 
     // Create tasks
     xTaskCreate(usb_device_task,   "usb_task",    2048, NULL, 6, NULL);

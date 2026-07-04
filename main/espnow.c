@@ -42,14 +42,14 @@ static esp_err_t send_packet(uint8_t type, int32_t value)
     return ret;
 }
 
-static void espnow_send_encoder(int delta)
+void espnow_send_encoder(int delta)
 {
     esp_err_t ret = send_packet(PKT_ENCODER, (int32_t)delta);
     if (ret != ESP_OK) ESP_LOGW(TAG, "TX encoder FAILED: %d", ret);
     hid_send_event(HID_EVT_ENCODER, (int8_t)delta);
 }
 
-static void espnow_send_button(int state)
+void espnow_send_button(int state)
 {
     esp_err_t ret = send_packet(PKT_BUTTON, (int32_t)state);
     if (ret != ESP_OK) ESP_LOGW(TAG, "TX button FAILED: %d", ret);
